@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
@@ -13,66 +14,75 @@ import javax.validation.constraints.Size;
 @Entity
 public class Product {
 	@Id
+	@GeneratedValue
 	private int id;
-	@Size(min=3,max=25)
-	private String nom;
-	@Min(value=1)
-	private int prix;
-	
-	private int prixAchat;
-	
+	private String titre;
+	private String description;
+	private String image;
+	private Double prix;
 	
 	public Product() {
 	}
 
-	public Product(int id, String nom, int prix, int prixAchat) {
+	public Product(int id, String titre, String description, String image, Double prix) {
 		this.id = id;
-		
-		this.nom = nom;
-		
+		this.titre = titre;
+		this.description = description;
+		this.image = image;
 		this.prix = prix;
-		
-		this.prixAchat = prixAchat;
 	}
 
 	public int getId() {
 		return id;
 	}
 
+
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	public String getNom() {
-		return nom;
+
+	public String getTitre() {
+		return titre;
 	}
 
-	public void setNom(String nom) {
-		this.nom = nom;
+	public void setTitre(String titre) {
+		this.titre = titre;
 	}
 
-	public int getPrix() {
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public Double getPrix() {
 		return prix;
 	}
 
-	public void setPrix(int prix) {
+	public void setPrix(Double prix) {
 		this.prix = prix;
 	}
 
-	public int getPrixAchat() {
-		return prixAchat;
-	}
-
-	public void setPrixAchat(int prixAchat) {
-		this.prixAchat = prixAchat;
-	}
-
 	@Override
-	public String toString() {
-	      return "Product{" +
-	              "id=" + id +
-	              ", nom='" + nom + '\'' +
-	              ", prix=" + prix +
-	              '}';
-	}
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", titre='" + titre + '\'' +
+                ", description='" + description + '\'' +
+                ", image='" + image + '\'' +
+                ", prix=" + prix +
+                '}';
+    }
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ecommerce.microcommerce.model.Product;
 import com.ecommerce.microcommerce.web.dao.ProductDao;
+import com.ecommerce.microcommerce.web.exceptions.ProductNotFoundException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -26,44 +27,58 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
 @RestController
 public class ProductController {
 
-		@Autowired
-	
+	@Autowired
 	private ProductDao productDao;
+		
+	@GetMapping("/Produits")
+	public List<Product> listeDesProduits(){
+		List<Product> products = productDao.findAll();
+		
+		if(products.isEmpty()) 
+			throw new ProductNotFoundException("Aucun produit n'est disponible à la vente");
+		
+		return products;
+	}
 	
+	/**
 	@GetMapping("/Produits")
 	public MappingJacksonValue listeProduits() {
-		Iterable<Product> produits = productDao.findAll();
+		Iterable<Product> products = productDao.findAll();
+		
+		if(products.isEmpty()) 
+			throw new ProductNotFoundException("Aucun produit n'est disponible à la vente");
+		
+		
 		SimpleBeanPropertyFilter monFiltre = SimpleBeanPropertyFilter.serializeAllExcept("prixAchat");
 		FilterProvider listDeNosFiltres = new SimpleFilterProvider().addFilter("monFiltreDynamique", monFiltre);
-		MappingJacksonValue produitsFiltres = new MappingJacksonValue(produits);
+		MappingJacksonValue produitsFiltres = new MappingJacksonValue(products);
 		produitsFiltres.setFilters(listDeNosFiltres);
 		return produitsFiltres;
 		
-	}
+	} **/
+	
 	
 	@GetMapping("/Produits/{id}")
-	public Product afficherUnProduit(@PathVariable int id) {
-		return productDao.findById(id);
+	public Optional<Product> recupererUnProduit(@PathVariable int id) {
+		Optional<Product> product = productDao.findById(id);
+		if(!product.isPresent())
+			throw new ProductNotFoundException("Le produit correspondant à l'id " + id + " n'existe pas");
+		return product;
 	}
 	
-	@GetMapping(value = "test/produits/{prixLimit}")
-	public List<Product> testDeRequetes(@PathVariable int prixLimit){
-		return productDao.findByPrixGreaterThan(400);
-	}
-
 	
 	@PostMapping(value = "/Produits")
-	public ResponseEntity<Product> ajouterProduit(@Valid @RequestBody Product product) {
+	public ResponseEntity<Product> ajouterProduit(@RequestBody Product product) {
 		Product productAdded = productDao.save(product);
-		if(Objects.isNull(productAdded)) {
+		if(Objects.isNull(productAdded)) 
 			return ResponseEntity.noContent().build();
-		}
 		
 		URI location = ServletUriComponentsBuilder
 				.fromCurrentRequest()
