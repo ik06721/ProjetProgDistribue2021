@@ -51,4 +51,14 @@ public class CommandeController {
 		paiementsFiltres.setFilters(listDeNosFiltres);
 		return paiementsFiltres;
     }
+    
+    @DeleteMapping(value = "/commandes/{id}")
+	public void supprimerCommande(@PathVariable int id) {
+		commandesDao.deleteById(id);
+	}
+	
+	@PutMapping(value = "/commandes")
+	public void updateCommande(@RequestBody Commande commande) {
+		commandesDao.save(commande);
+	}
 }
