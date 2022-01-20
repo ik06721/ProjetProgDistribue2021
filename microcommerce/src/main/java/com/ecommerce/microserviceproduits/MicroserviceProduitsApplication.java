@@ -1,12 +1,12 @@
-package com.ecommerce.microcommerce;
+package com.ecommerce.microserviceproduits;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MicrocommerceApplication {
+public class MicroserviceProduitsApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MicrocommerceApplication.class, args);
+		SpringApplication.run(MicroserviceProduitsApplication.class, args);
 	}
 }

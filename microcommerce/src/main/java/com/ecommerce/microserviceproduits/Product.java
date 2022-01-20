@@ -1,4 +1,4 @@
-package com.ecommerce.microcommerce.model;
+package com.ecommerce.microserviceproduits;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -9,22 +9,20 @@ import javax.persistence.Id;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
-//@JsonFilter("monFiltreDynamique")
 
 @Entity
 public class Product {
 	@Id
-	@GeneratedValue
 	private int id;
 	private String titre;
 	private String description;
 	private String image;
-	private Double prix;
+	private int prix;
 	
 	public Product() {
 	}
 
-	public Product(int id, String titre, String description, String image, Double prix) {
+	public Product(int id, String titre, String description, String image, int prix) {
 		this.id = id;
 		this.titre = titre;
 		this.description = description;
@@ -67,11 +65,11 @@ public class Product {
 		this.image = image;
 	}
 
-	public Double getPrix() {
+	public int getPrix() {
 		return prix;
 	}
 
-	public void setPrix(Double prix) {
+	public void setPrix(int prix) {
 		this.prix = prix;
 	}
 

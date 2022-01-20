@@ -1,4 +1,4 @@
-package com.ecommerce.microcommerce.web.controller;
+package com.ecommerce.microserviceproduits;
 
 import java.util.List;
 
@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ecommerce.microcommerce.model.Product;
-import com.ecommerce.microcommerce.web.dao.ProductDao;
-import com.ecommerce.microcommerce.web.exceptions.ProductNotFoundException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -36,23 +35,13 @@ public class ProductController {
 
 	@Autowired
 	private ProductDao productDao;
-		
-	@GetMapping("/Produits")
-	public List<Product> listeDesProduits(){
-		List<Product> products = productDao.findAll();
-		
-		if(products.isEmpty()) 
-			throw new ProductNotFoundException("Aucun produit n'est disponible à la vente");
-		
-		return products;
-	}
 	
-	/**
-	@GetMapping("/Produits")
+	
+	@RequestMapping(value = "/Produits", method = RequestMethod.GET)
 	public MappingJacksonValue listeProduits() {
 		Iterable<Product> products = productDao.findAll();
 		
-		if(products.isEmpty()) 
+		if(productDao.findAll().isEmpty()) 
 			throw new ProductNotFoundException("Aucun produit n'est disponible à la vente");
 		
 		
@@ -62,13 +51,12 @@ public class ProductController {
 		produitsFiltres.setFilters(listDeNosFiltres);
 		return produitsFiltres;
 		
-	} **/
-	
+	} 
 	
 	@GetMapping("/Produits/{id}")
-	public Optional<Product> recupererUnProduit(@PathVariable int id) {
-		Optional<Product> product = productDao.findById(id);
-		if(!product.isPresent())
+	public Product recupererUnProduit(@PathVariable int id) {
+		Product product = productDao.findById(id);
+		if(product == null)
 			throw new ProductNotFoundException("Le produit correspondant à l'id " + id + " n'existe pas");
 		return product;
 	}
@@ -77,7 +65,8 @@ public class ProductController {
 	@PostMapping(value = "/Produits")
 	public ResponseEntity<Product> ajouterProduit(@RequestBody Product product) {
 		Product productAdded = productDao.save(product);
-		if(Objects.isNull(productAdded)) 
+		
+		if(productAdded == null) 
 			return ResponseEntity.noContent().build();
 		
 		URI location = ServletUriComponentsBuilder
@@ -87,7 +76,7 @@ public class ProductController {
 				.toUri();
 		return ResponseEntity.created(location).build(); 
 	}
-	
+
 	@DeleteMapping(value = "/Produits/{id}")
 	public void supprimerProduit(@PathVariable int id) {
 		productDao.deleteById(id);
