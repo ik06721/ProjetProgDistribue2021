@@ -3,13 +3,9 @@ package com.ecommerce.microservicecommandes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -38,18 +34,14 @@ public class CommandeController {
         return commande;
     }
     
-    @GetMapping("/commandes")
-	public MappingJacksonValue listeCommandes() {
-		Iterable<Commande> paiements = commandesDao.findAll();
+    @GetMapping(value = "/commandes")
+	public List<Commande> listeDesCommandes() {
+		List<Commande> commandes = commandesDao.findAll();
 		
-		if(commandesDao.findAll().isEmpty()) 
+		if(commandes.isEmpty()) 
 			throw new CommandeNotFoundException("Erreur, il n'existe aucune commande");
 		
-		SimpleBeanPropertyFilter monFiltre = SimpleBeanPropertyFilter.serializeAllExcept("");
-		FilterProvider listDeNosFiltres = new SimpleFilterProvider().addFilter("monFiltreDynamique", monFiltre);
-		MappingJacksonValue paiementsFiltres = new MappingJacksonValue(paiements);
-		paiementsFiltres.setFilters(listDeNosFiltres);
-		return paiementsFiltres;
+		return commandes;
     }
     
     @DeleteMapping(value = "/commandes/{id}")

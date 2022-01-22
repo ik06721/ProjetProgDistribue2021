@@ -1,13 +1,7 @@
 package com.ecommerce.microserviceproduits;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
 
 
 @Entity

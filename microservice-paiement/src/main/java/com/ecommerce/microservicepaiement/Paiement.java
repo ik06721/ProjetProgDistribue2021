@@ -2,12 +2,8 @@ package com.ecommerce.microservicepaiement;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-
-//@JsonFilter("monFiltreDynamique")
 @Entity
 public class Paiement {
 

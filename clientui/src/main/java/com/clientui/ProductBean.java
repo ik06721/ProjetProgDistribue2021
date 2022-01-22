@@ -11,7 +11,7 @@ public class ProductBean {
 
     private String image;
 
-    private Double prix;
+    private int prix;
 
     public ProductBean() {
     }
@@ -48,11 +48,11 @@ public class ProductBean {
         this.image = image;
     }
 
-    public Double getPrix() {
+    public int getPrix() {
         return prix;
     }
 
-    public void setPrix(Double prix) {
+    public void setPrix(int prix) {
         this.prix = prix;
     }
 

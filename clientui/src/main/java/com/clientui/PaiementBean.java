@@ -5,11 +5,11 @@ public class PaiementBean {
 
     private int id;
 
-    private Integer idCommande;
+    private int idCommande;
 
-    private Double montant;
+    private int montant;
 
-    private Long numeroCarte;
+    private long numeroCarte;
 
     public PaiementBean() {
     }
@@ -22,27 +22,27 @@ public class PaiementBean {
         this.id = id;
     }
 
-    public Integer getIdCommande() {
+    public int getIdCommande() {
         return idCommande;
     }
 
-    public void setIdCommande(Integer idCommande) {
+    public void setIdCommande(int idCommande) {
         this.idCommande = idCommande;
     }
 
-    public Double getMontant() {
+    public int getMontant() {
         return montant;
     }
 
-    public void setMontant(Double montant) {
+    public void setMontant(int montant) {
         this.montant = montant;
     }
 
-    public Long getNumeroCarte() {
+    public long getNumeroCarte() {
         return numeroCarte;
     }
 
-    public void setNumeroCarte(Long numeroCarte) {
+    public void setNumeroCarte(long numeroCarte) {
         this.numeroCarte = numeroCarte;
     }
 

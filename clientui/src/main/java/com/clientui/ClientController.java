@@ -2,6 +2,7 @@ package com.clientui;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +34,10 @@ public class ClientController {
     * */
     @RequestMapping("/")
     public String accueil(Model model){
-
+    	
         List<ProductBean> produits =  ProduitsProxy.listeDesProduits();
-
         model.addAttribute("produits", produits);
-
+        
         return "Accueil";
     }
 
@@ -50,7 +50,6 @@ public class ClientController {
     public String ficheProduit(@PathVariable int id,  Model model){
 
         ProductBean produit = ProduitsProxy.recupererUnProduit(id);
-
         model.addAttribute("produit", produit);
 
         return "FicheProduit";
@@ -61,23 +60,26 @@ public class ClientController {
     * Opération qui fait appel au microservice de commande pour placer une commande et récupérer les détails de la commande créée
     * */
     @RequestMapping(value = "/commander-produit/{idProduit}/{montant}")
-    public String passerCommande(@PathVariable int idProduit, @PathVariable Double montant,  Model model){
-
+    public String passerCommande(@PathVariable int idProduit, @PathVariable int montant,  Model model){
 
         CommandeBean commande = new CommandeBean();
-
+        Random random = new Random();
+        int nbAleatoire = random.nextInt(1000 + 1) + 1;
+        
         //On renseigne les propriétés de l'objet de type CommandeBean que nous avons crée
+        commande.setId(nbAleatoire);
         commande.setProductId(idProduit);
         commande.setQuantite(1);
         commande.setDateCommande(new Date());
-
+        commande.setCommandePayee(false);
+        
         //appel du microservice commandes grâce à Feign et on récupère en retour les détails de la commande créée, notamment son ID (étape 4).
         CommandeBean commandeAjoutee = CommandesProxy.ajouterCommande(commande);
 
         //on passe à la vue l'objet commande et le montant de celle-ci afin d'avoir les informations nécessaire pour le paiement
         model.addAttribute("commande", commandeAjoutee);
         model.addAttribute("montant", montant);
-
+        
         return "Paiement";
     }
 
@@ -86,31 +88,41 @@ public class ClientController {
     * Opération qui fait appel au microservice de paiement pour traiter un paiement
     * */
     @RequestMapping(value = "/payer-commande/{idCommande}/{montantCommande}")
-    public String payerCommande(@PathVariable int idCommande, @PathVariable Double montantCommande, Model model){
+    public String payerCommande(@PathVariable int idCommande, @PathVariable int montantCommande, Model model){
 
-        PaiementBean paiementAExcecuter = new PaiementBean();
-
+        PaiementBean paiementAExecuter = new PaiementBean();
+        
+        Random random = new Random();
+        int nbAleatoire = random.nextInt(1000 + 1) + 1;
         //on reseigne les détails du produit
-        paiementAExcecuter.setIdCommande(idCommande);
-        paiementAExcecuter.setMontant(montantCommande);
-        paiementAExcecuter.setNumeroCarte(numcarte()); // on génère un numéro au hasard pour simuler une CB
+        paiementAExecuter.setId(nbAleatoire);
+        paiementAExecuter.setIdCommande(idCommande);
+        paiementAExecuter.setMontant(montantCommande);
+        paiementAExecuter.setNumeroCarte(numcarte()); // on génère un numéro au hasard pour simuler une CB
 
         // On appel le microservice et (étape 7) on récupère le résultat qui est sous forme ResponseEntity<PaiementBean> ce qui va nous permettre de vérifier le code retour.
-        ResponseEntity<PaiementBean> paiement = paiementProxy.payerUneCommande(paiementAExcecuter);
+        ResponseEntity<PaiementBean> paiement = paiementProxy.payerUneCommande(paiementAExecuter);
 
-        Boolean paiementAccepte = false;
+        Boolean etatPaiement = false;
         //si le code est autre que 201 CREATED, c'est que le paiement n'a pas pu aboutir.
-        if(paiement.getStatusCode() == HttpStatus.CREATED)
-                paiementAccepte = true;
-
-        model.addAttribute("paiementOk", paiementAccepte); // on envoi un Boolean paiementOk à la vue
-
+        if(paiement.getStatusCode() == HttpStatus.CREATED) {
+        		etatPaiement = true;
+                CommandeBean commande = CommandesProxy.recupererUneCommande(idCommande);
+                commande.setCommandePayee(true);
+                CommandesProxy.updateCommande(commande); 
+        }
+        
+        else {
+        		paiementProxy.supprimerPaiement(idCommande);
+        		CommandesProxy.supprimerCommande(idCommande);
+        }
+        
+        model.addAttribute("paiementOk", etatPaiement); // on envoi un Boolean paiementAccepté à la vue
         return "confirmation";
     }
 
     //Génére une serie de 16 chiffres au hasard pour simuler vaguement une CB
-    private Long numcarte() {
-
+    private long numcarte() {
         return ThreadLocalRandom.current().nextLong(1000000000000000L,9000000000000000L );
     }
 }

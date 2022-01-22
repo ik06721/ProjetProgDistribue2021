@@ -1,19 +1,11 @@
 package com.ecommerce.microservicepaiement;
 
-import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 @RestController
 public class PaiementController {
@@ -40,28 +32,24 @@ public class PaiementController {
     }
     
    
-	@GetMapping("/paiements")
-	public MappingJacksonValue listeProduits() {
-		Iterable<Paiement> paiements = paiementDao.findAll();
+	@GetMapping(value = "/paiements")
+	public List<Paiement> listeDesPaiements() {
+		List<Paiement> paiements = paiementDao.findAll();
 		
-		if(paiementDao.findAll().isEmpty()) 
+		if(paiements.isEmpty()) 
 			throw new PaiementExistantException("Erreur, il n'existe aucun paiement");
-		
-		SimpleBeanPropertyFilter monFiltre = SimpleBeanPropertyFilter.serializeAllExcept("numeroCarte");
-		FilterProvider listDeNosFiltres = new SimpleFilterProvider().addFilter("monFiltreDynamique", monFiltre);
-		MappingJacksonValue paiementsFiltres = new MappingJacksonValue(paiements);
-		paiementsFiltres.setFilters(listDeNosFiltres);
-		return paiementsFiltres;
+
+		return paiements;
 		
 	}
     
     @DeleteMapping(value = "/paiements/{id}")
-	public void supprimerProduit(@PathVariable int id) {
+	public void supprimerPaiement(@PathVariable int id) {
 		paiementDao.deleteById(id);
 	}
 	
 	@PutMapping(value = "/paiements")
-	public void updateProduit(@RequestBody Paiement paiement) {
+	public void updatePaiement(@RequestBody Paiement paiement) {
 		paiementDao.save(paiement);
 	}
 	

@@ -2,18 +2,21 @@ package com.clientui;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 
 public class CommandeBean {
 
     private int id;
 
-    private Integer productId;
+    private int productId;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date dateCommande;
 
-    private Integer quantite;
+    private int quantite;
 
-    private Boolean commandePayee;
+    private boolean commandePayee;
 
     public CommandeBean() {
     }
@@ -26,11 +29,11 @@ public class CommandeBean {
         this.id = id;
     }
 
-    public Integer getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
@@ -42,19 +45,19 @@ public class CommandeBean {
         this.dateCommande = dateCommande;
     }
 
-    public Integer getQuantite() {
+    public int getQuantite() {
         return quantite;
     }
 
-    public void setQuantite(Integer quantite) {
+    public void setQuantite(int quantite) {
         this.quantite = quantite;
     }
 
-    public Boolean getCommandePayee() {
+    public boolean getCommandePayee() {
         return commandePayee;
     }
 
-    public void setCommandePayee(Boolean commandePayee) {
+    public void setCommandePayee(boolean commandePayee) {
         this.commandePayee = commandePayee;
     }
 
