@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -113,7 +114,7 @@ public class ClientController {
         }
         
         else {
-        		paiementProxy.supprimerPaiement(idCommande);
+        		//paiementProxy.supprimerPaiement(idCommande);
         		CommandesProxy.supprimerCommande(idCommande);
         }
         
