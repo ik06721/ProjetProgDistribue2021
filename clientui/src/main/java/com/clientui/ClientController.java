@@ -6,13 +6,15 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Controller
 public class ClientController {
@@ -33,15 +35,19 @@ public class ClientController {
     * Les produits sont récupérés grâce à ProduitsProxy
     * On fini par rentourner la page Accueil.html à laquelle on passe la liste d'objets "produits" récupérés.
     * */
+    @GetMapping
+    @CircuitBreaker(name = "panne" , fallbackMethod = "getInvoiceFallback") 
     @RequestMapping("/")
     public String accueil(Model model){
-    	
         List<ProductBean> produits =  ProduitsProxy.listeDesProduits();
         model.addAttribute("produits", produits);
-        
         return "Accueil";
     }
-
+    
+    public String getInvoiceFallback(Exception e) {
+    	System.out.println("---RESPONSE FROM FALLBACK METHOD---");
+    	return "Maintenance";
+    }
     /*
     * Étape (2)
     * Opération qui récupère les détails d'un produit

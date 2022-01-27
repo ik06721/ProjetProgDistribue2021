@@ -30,7 +30,7 @@
                   <div class="u-container-layout u-valign-middle-xs u-container-layout-2">
                     <h3 th:text= "${produit.titre}" class="u-custom-font u-font-oswald u-text u-text-3"></h3>
                     <p th:text= "${produit.description}" class="u-text u-text-4"></p>
-                    <h6 data-th-text="${'$'+produit.prix}" class="u-text u-text-palette-3-base u-text-5"></h6>
+                    <h6 data-th-text="${produit.prix+'€'}" class="u-text u-text-palette-3-base u-text-5"></h6>
                     <a th:href="@{|/details-produit/${produit.id}|}" class="u-btn u-btn-rectangle u-button-style u-grey-10 u-btn-1">Détails</a>
                   </div>
                 </div>
