@@ -1,0 +1,36 @@
+ server.port: 9095
+
+ eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:9094/eureka/
+    instance:
+      prefer-ip-address: true
+      hostname: localhost
+      
+ spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+      
+      - id: microservice-clientui
+        uri: lb://MICROSERVICE-CLIENTUI
+        predicates:
+        - Path=/**
+      
+      - id: microservice-commandes
+        uri: lb://MICROSERVICE-COMMANDES
+        predicates: 
+        - Path=/commandes/**
+        
+      - id: microservice-paiement
+        uri: lb://MICROSERVICE-PAIEMENT
+        predicates: 
+        - Path=/paiements/**
+        
+      - id: microservice-produits
+        uri: lb://MICROSERVICE-PRODUITS
+        predicates:
+        - Path=/Produits/**
