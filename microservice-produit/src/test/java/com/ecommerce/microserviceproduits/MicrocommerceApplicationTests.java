@@ -1,4 +1,4 @@
-package com.ecommerce.microcommerce;
+package com.ecommerce.microserviceproduits;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
